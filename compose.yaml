@@ -1,0 +1,10 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_DATABASE=pokemonAPI'
+      - 'MYSQL_PASSWORD=pikachu'
+      - 'MYSQL_ROOT_PASSWORD=mewtwo'
+      - 'MYSQL_USER=AshKetchum'
+    ports:
+      - '3306:3306'

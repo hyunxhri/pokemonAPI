@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "attacks")
+@Table(name = "attack")
 public class Attack {
 
     @Id
@@ -13,6 +13,5 @@ public class Attack {
     private Long id;
     private String name;
     private String type;
-    private String description;
 
 }

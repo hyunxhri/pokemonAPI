@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User {
 
     @Id
@@ -13,8 +13,6 @@ public class User {
     private Long id;
     private String username;
     private String password;
-    private String email;
     private String img;
-    private Boolean connected;
 
 }

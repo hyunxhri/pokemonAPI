@@ -2,12 +2,14 @@ package com.pokemon.api.controller;
 
 import com.pokemon.api.controller.mapper.UserMapper;
 import com.pokemon.api.dto.CreateUserDTO;
+import com.pokemon.api.dto.LoginUserDTO;
 import com.pokemon.api.dto.UserDTO;
+import com.pokemon.api.dto.UserTokenDTO;
 import com.pokemon.api.exception.UserNotFoundException;
 import com.pokemon.api.model.User;
 import com.pokemon.api.repository.UserRepository;
+import com.pokemon.api.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +19,7 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @GetMapping("/{id}")
     public UserDTO getUserById(@PathVariable Long id){
@@ -28,18 +30,12 @@ public class UserController {
 
     @PostMapping
     public void createUser(@RequestBody CreateUserDTO userDTO){
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setImg(userDTO.getUsername());
-        userRepository.save(user);
+        userService.createUser(userDTO.getUsername(), userDTO.getPassword(), userDTO.getGender());
     }
 
     @PostMapping("/login")
-    public UserDTO loginUser(){
-        UserDTO userDTO = new UserDTO();
-        //TO DO.
-        return userDTO;
+    public UserTokenDTO loginUser(@RequestBody LoginUserDTO loginUserDTO){
+        return userService.loginUser(loginUserDTO.getUsername(), loginUserDTO.getPassword());
     }
 
     //PUT & DELETE

@@ -20,13 +20,15 @@ public class PokemonSpecieController {
 
     @GetMapping
     public Page<PokemonSpecie> getPokemons(@RequestParam(defaultValue = "0") int page,
-                                           @RequestParam(defaultValue = "100") int size) {
+                                           @RequestParam(defaultValue = "32") int size) {
         Pageable pageRequest = PageRequest.of(page, size);
         return pokemonSpecieRepository.findAll(pageRequest);
 
     }
 
     @GetMapping("/{identifier}")
+
+    // TO DO SEPARAR EN DOS ENDPOINTS /name/{name} y /id/{id}
     public PokemonSpecie getPokemon(@PathVariable String identifier) {
         if (identifier.matches("\\d+")) {
             Short pokemonId = Short.parseShort(identifier);

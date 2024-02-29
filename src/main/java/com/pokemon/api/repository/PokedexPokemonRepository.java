@@ -11,6 +11,6 @@ public interface PokedexPokemonRepository extends JpaRepository<PokedexPokemon, 
 
     Short countByPokedexId(Long pokedexId);
 
-    PokedexPokemon findByPokemonPokemonId(Short pokemonId);
+    PokedexPokemon findByPokedexIdAndPokemonPokemonId(Long pokedexId, Short pokemonId);
 
 }

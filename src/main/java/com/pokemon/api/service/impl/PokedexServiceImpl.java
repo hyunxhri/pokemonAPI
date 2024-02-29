@@ -42,7 +42,7 @@ public class PokedexServiceImpl implements PokedexService {
             throw new MaxPokemonFavoriteException("Max pokemons favorite");
         }
 
-        PokedexPokemon pokemon = pokedexPokemonRepository.findByPokemonPokemonId(pokemonId);
+        PokedexPokemon findByPokedexIdAndPokemonPokemonId(Long pokedexId, Short pokemonId);
 
         if (pokemon.getCaptured()) {
             pokemon.setFavorite(true);

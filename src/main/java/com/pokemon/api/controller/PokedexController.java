@@ -25,11 +25,23 @@ public class PokedexController {
     }
 
     @PutMapping("/pokemons/{pokemonId}")
-    public void markFavorite(@RequestHeader(name = "Authorization") String token, @PathVariable Short pokemonId, @RequestBody UpdatePokemonDTO updatePokemonDTO) {
+    public void updatePokemon(@RequestHeader(name = "Authorization") String token, @PathVariable Short pokemonId, @RequestBody UpdatePokemonDTO updatePokemonDTO) {
         Long user = tokenExtractor.getUser(token);
-        if (updatePokemonDTO.getFavorite())
-            pokedexService.addFavorite(user, pokemonId);
-        else pokedexService.removeFavorite(user, pokemonId);
+
+        if (updatePokemonDTO.getFavorite() != null) {
+            if (updatePokemonDTO.getFavorite()) {
+                pokedexService.addFavorite(user, pokemonId);
+            } else {
+                pokedexService.removeFavorite(user, pokemonId);
+            }
+        }
+
+        if (updatePokemonDTO.getCaptured() != null) {
+            if (updatePokemonDTO.getCaptured()) {
+                pokedexService.capture(user, pokemonId);
+            }
+        }
+
     }
 
     private UserPokedexDTO toDto(UserPokedexOutput output) {

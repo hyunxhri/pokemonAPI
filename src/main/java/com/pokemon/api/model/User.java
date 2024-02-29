@@ -16,5 +16,7 @@ public class User {
     private String password;
     private String gender;
     private String img;
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Pokedex pokedex;
 
 }

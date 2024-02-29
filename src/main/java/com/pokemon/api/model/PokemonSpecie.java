@@ -3,6 +3,8 @@ package com.pokemon.api.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "pokemon_specie")
@@ -21,5 +23,7 @@ public class PokemonSpecie {
     private Short sAttack;
     private Short sDefense;
     private Short speed;
+    @OneToMany(mappedBy = "pokemon")
+    private List<PokedexPokemon> pokedexPokemon;
 
 }

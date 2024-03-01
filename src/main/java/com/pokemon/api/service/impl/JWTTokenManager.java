@@ -40,7 +40,7 @@ public class JWTTokenManager implements TokenGenerator, TokenExtractor {
                 // Moment when the token was created
                 .withIssuedAt(Instant.now())
                 //The token expires in 1 hour
-                .withExpiresAt(Instant.now().plusSeconds(3600))
+                .withExpiresAt(Instant.now().plusSeconds(4800))
                 .withJWTId(UUID.randomUUID().toString())
                 //Can't use the token before the date
                 .withNotBefore(Instant.now())

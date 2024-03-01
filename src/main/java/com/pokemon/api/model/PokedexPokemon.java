@@ -15,6 +15,7 @@ public class PokedexPokemon {
     private Pokedex pokedex;
     @ManyToOne
     private PokemonSpecie pokemon;
+    private Boolean seen;
     private Boolean captured;
     private Boolean favorite;
 

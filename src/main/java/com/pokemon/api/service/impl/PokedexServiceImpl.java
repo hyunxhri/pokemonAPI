@@ -2,6 +2,7 @@ package com.pokemon.api.service.impl;
 
 import com.pokemon.api.exception.MaxPokemonFavoriteException;
 import com.pokemon.api.exception.PokemonNotCapturedException;
+import com.pokemon.api.exception.PokemonNotFoundException;
 import com.pokemon.api.model.Pokedex;
 import com.pokemon.api.model.PokedexPokemon;
 import com.pokemon.api.repository.PokedexPokemonRepository;
@@ -82,10 +83,28 @@ public class PokedexServiceImpl implements PokedexService {
         PokedexPokemon pokemon = new PokedexPokemon();
         pokemon.setPokemon(pokemonSpecieRepository.getReferenceById(pokemonId));
         pokemon.setCaptured(true);
+        pokemon.setSeen(true);
         pokemon.setFavorite(false);
         pokemon.setPokedex(pokedex);
         pokedexPokemonRepository.save(pokemon);
 
+    }
+
+    @Override
+    public void seePokemon(Long userId, short pokemonId) {
+        Pokedex pokedex = pokedexRepository.findByUserId(userId);
+
+        PokedexPokemon pokemon = pokedexPokemonRepository.findByPokedexIdAndPokemonPokemonId(pokedex.getId(), pokemonId);
+
+        if (pokemon == null) {
+            pokemon = new PokedexPokemon();
+            pokemon.setPokedex(pokedex);
+            pokemon.setPokemon(pokemonSpecieRepository.getReferenceById(pokemonId));
+        }
+
+        pokemon.setSeen(true);
+
+        pokedexPokemonRepository.save(pokemon);
     }
 
     private UserPokedexOutput toUserPokemonOutput(Pokedex pokedex, List<PokedexPokemon> pokedexPokemons) {
@@ -103,6 +122,7 @@ public class PokedexServiceImpl implements PokedexService {
     private PokedexPokemonOutput toPokedexPokemonOutput(PokedexPokemon pokedexPokemon) {
         PokedexPokemonOutput output = new PokedexPokemonOutput();
         output.setPokemonId(pokedexPokemon.getPokemon().getPokemonId());
+        output.setSeen(pokedexPokemon.getSeen());
         output.setCaptured(pokedexPokemon.getCaptured());
         output.setFavorite(pokedexPokemon.getFavorite());
         return output;

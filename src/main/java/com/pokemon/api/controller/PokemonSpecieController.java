@@ -33,17 +33,17 @@ public class PokemonSpecieController {
     }
 
     @GetMapping("/{identifier}")
-
-    // TO DO SEPARAR EN DOS ENDPOINTS /name/{name} y /id/{id}
-    public PokemonSpecie getPokemon(@PathVariable String identifier) {
+    public PokemonSpecieDTO getPokemon(@PathVariable String identifier) {
+        PokemonSpecie pokemon;
         if (identifier.matches("\\d+")) {
             Short pokemonId = Short.parseShort(identifier);
-            return pokemonSpecieRepository.findById(pokemonId)
+            pokemon = pokemonSpecieRepository.findById(pokemonId)
                     .orElseThrow(() -> new PokemonNotFoundException("Pokemon with id " + identifier + " not found."));
         } else {
-            return pokemonSpecieRepository.findByNameIgnoreCase(identifier)
+            pokemon = pokemonSpecieRepository.findByNameIgnoreCase(identifier)
                     .orElseThrow(() -> new PokemonNotFoundException("Pokemon with name " + identifier + " not found."));
         }
+        return pokemonSpecieMapper.toDTO(pokemon);
     }
 
     @GetMapping("/random")

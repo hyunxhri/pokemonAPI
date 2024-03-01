@@ -42,6 +42,12 @@ public class PokedexController {
             }
         }
 
+        if (updatePokemonDTO.getSeen() != null) {
+            if (updatePokemonDTO.getSeen()){
+                pokedexService.seePokemon(user, pokemonId);
+            }
+        }
+
     }
 
     private UserPokedexDTO toDto(UserPokedexOutput output) {
@@ -59,6 +65,7 @@ public class PokedexController {
     private PokedexPokemonDTO toPokemonPokedexDto(PokedexPokemonOutput output) {
         PokedexPokemonDTO dto = new PokedexPokemonDTO();
         dto.setPokemonId(output.getPokemonId());
+        dto.setSeen(output.getSeen());
         dto.setCaptured(output.getCaptured());
         dto.setFavorite(output.getFavorite());
 

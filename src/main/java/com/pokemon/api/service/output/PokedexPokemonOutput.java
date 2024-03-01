@@ -6,6 +6,7 @@ import lombok.Data;
 public class PokedexPokemonOutput {
 
     private Short pokemonId;
+    private Boolean seen;
     private Boolean favorite;
     private Boolean captured;
 

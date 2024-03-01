@@ -47,10 +47,12 @@ public class PokemonSpecieController {
     }
 
     @GetMapping("/random")
-    public PokemonSpecie getPokemon() {
+    public PokemonSpecieDTO getPokemon() {
         int max = (int) pokemonSpecieRepository.count();
         Random random = new Random();
         int randomId = random.nextInt(1, max);
-        return pokemonSpecieRepository.findById((short) randomId).orElseThrow(() -> new PokemonNotFoundException("Pokemon with id " + randomId + " not found."));
+        PokemonSpecie pokemon = pokemonSpecieRepository.findById((short) randomId)
+                .orElseThrow(() -> new PokemonNotFoundException("Pokemon with id " + randomId + " not found."));
+        return pokemonSpecieMapper.toDTO(pokemon);
     }
 }

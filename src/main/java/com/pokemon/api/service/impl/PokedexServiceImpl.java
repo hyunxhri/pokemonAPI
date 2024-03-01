@@ -76,7 +76,10 @@ public class PokedexServiceImpl implements PokedexService {
         Pokedex pokedex = pokedexRepository.findByUserId(userId);
 
         if(pokedex.getPokedexPokemon().stream()
-                .anyMatch(p -> p.getPokemon().getPokemonId().equals(pokemonId))){
+                .anyMatch(p -> p.getPokemon().getPokemonId().equals(pokemonId)
+                        && (p.getCaptured())
+
+                )){
             throw new RuntimeException();
         }
 
@@ -99,6 +102,8 @@ public class PokedexServiceImpl implements PokedexService {
         if (pokemon == null) {
             pokemon = new PokedexPokemon();
             pokemon.setPokedex(pokedex);
+            pokemon.setCaptured(false);
+            pokemon.setFavorite(false);
             pokemon.setPokemon(pokemonSpecieRepository.getReferenceById(pokemonId));
         }
 

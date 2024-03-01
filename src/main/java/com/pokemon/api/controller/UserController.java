@@ -8,6 +8,7 @@ import com.pokemon.api.dto.UserTokenDTO;
 import com.pokemon.api.exception.UserNotFoundException;
 import com.pokemon.api.model.User;
 import com.pokemon.api.repository.UserRepository;
+import com.pokemon.api.service.TokenExtractor;
 import com.pokemon.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +18,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserService userService;
-
-    @GetMapping("/{id}")
-    public UserDTO getUserById(@PathVariable Long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found."));
-        return userMapper.toDTO(user);
+    private final TokenExtractor tokenExtractor;
+    @GetMapping("/me")
+    public UserDTO getUserById(@RequestHeader(name = "Authorization") String token){
+        Long userId = tokenExtractor.getUser(token);
+        return userMapper.toDTO(userService.getUser(userId));
     }
 
     @PostMapping
@@ -37,6 +36,4 @@ public class UserController {
     public UserTokenDTO loginUser(@RequestBody LoginUserDTO loginUserDTO){
         return userService.loginUser(loginUserDTO.getUsername(), loginUserDTO.getPassword());
     }
-
-    //PUT & DELETE
 }

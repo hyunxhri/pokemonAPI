@@ -1,14 +1,17 @@
 package com.pokemon.api.controller;
 
+import com.pokemon.api.controller.mapper.PokemonSpecieMapper;
+import com.pokemon.api.dto.PokemonSpecieDTO;
 import com.pokemon.api.exception.PokemonNotFoundException;
 import com.pokemon.api.model.PokemonSpecie;
 import com.pokemon.api.repository.PokemonSpecieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 import java.util.Random;
 
 @RestController
@@ -17,12 +20,15 @@ import java.util.Random;
 public class PokemonSpecieController {
 
     private final PokemonSpecieRepository pokemonSpecieRepository;
+    private final PokemonSpecieMapper pokemonSpecieMapper;
 
     @GetMapping
-    public Page<PokemonSpecie> getPokemons(@RequestParam(defaultValue = "0") int page,
-                                           @RequestParam(defaultValue = "32") int size) {
+    public Page<PokemonSpecieDTO> getPokemons(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "32") int size) {
         Pageable pageRequest = PageRequest.of(page, size);
-        return pokemonSpecieRepository.findAll(pageRequest);
+        Page<PokemonSpecie> pokemons = pokemonSpecieRepository.findAll(pageRequest);
+        List<PokemonSpecieDTO> pokemonsDTO = pokemons.getContent().stream().map(pokemonSpecieMapper::toDTO).toList();
+        return new PageImpl<>(pokemonsDTO, pokemons.getPageable(), pokemons.getTotalElements());
 
     }
 

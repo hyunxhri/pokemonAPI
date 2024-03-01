@@ -11,5 +11,4 @@ public interface PokedexService {
     void removeFavorite(Long userId, Short pokemonId);
 
     void capture(Long userId, Short pokemonId);
-
 }

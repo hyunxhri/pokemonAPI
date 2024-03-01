@@ -6,5 +6,6 @@ import lombok.Data;
 public class UpdatePokemonDTO {
 
     private Boolean favorite;
+    private Boolean captured;
 
 }

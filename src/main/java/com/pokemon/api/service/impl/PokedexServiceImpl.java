@@ -6,6 +6,7 @@ import com.pokemon.api.model.Pokedex;
 import com.pokemon.api.model.PokedexPokemon;
 import com.pokemon.api.repository.PokedexPokemonRepository;
 import com.pokemon.api.repository.PokedexRepository;
+import com.pokemon.api.repository.PokemonSpecieRepository;
 import com.pokemon.api.service.PokedexService;
 import com.pokemon.api.service.output.PokedexPokemonOutput;
 import com.pokemon.api.service.output.UserPokedexOutput;
@@ -20,6 +21,7 @@ public class PokedexServiceImpl implements PokedexService {
 
     private final PokedexRepository pokedexRepository;
     private final PokedexPokemonRepository pokedexPokemonRepository;
+    private final PokemonSpecieRepository pokemonSpecieRepository;
     private static final Short MAX_FAVORITES = 6;
 
     @Override
@@ -42,7 +44,7 @@ public class PokedexServiceImpl implements PokedexService {
             throw new MaxPokemonFavoriteException("Max pokemons favorite");
         }
 
-        PokedexPokemon findByPokedexIdAndPokemonPokemonId(Long pokedexId, Short pokemonId);
+        PokedexPokemon pokemon = pokedexPokemonRepository.findByPokedexIdAndPokemonPokemonId(pokedex.getId(), pokemonId);
 
         if (pokemon.getCaptured()) {
             pokemon.setFavorite(true);
@@ -57,12 +59,31 @@ public class PokedexServiceImpl implements PokedexService {
 
         Pokedex pokedex = pokedexRepository.findByUserId(userId);
 
-        PokedexPokemon pokemon = pokedexPokemonRepository.findByPokemonPokemonId(pokemonId);
+        PokedexPokemon pokemon = pokedexPokemonRepository.findByPokedexIdAndPokemonPokemonId(pokedex.getId(), pokemonId);
 
         if (pokemon.getCaptured()) {
             pokemon.setFavorite(false);
         } else throw new PokemonNotCapturedException("Pokemon with id " + pokemonId + " is not captured");
 
+        pokedexPokemonRepository.save(pokemon);
+
+    }
+
+    @Override
+    public void capture(Long userId, Short pokemonId) {
+
+        Pokedex pokedex = pokedexRepository.findByUserId(userId);
+
+        if(pokedex.getPokedexPokemon().stream()
+                .anyMatch(p -> p.getPokemon().getPokemonId().equals(pokemonId))){
+            throw new RuntimeException();
+        }
+
+        PokedexPokemon pokemon = new PokedexPokemon();
+        pokemon.setPokemon(pokemonSpecieRepository.getReferenceById(pokemonId));
+        pokemon.setCaptured(true);
+        pokemon.setFavorite(false);
+        pokemon.setPokedex(pokedex);
         pokedexPokemonRepository.save(pokemon);
 
     }

@@ -13,6 +13,7 @@ public class UserMapperImpl implements UserMapper {
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(user.getUsername());
         userDTO.setImg(user.getImg());
+        userDTO.setGender(user.getGender());
         return userDTO;
     }
 

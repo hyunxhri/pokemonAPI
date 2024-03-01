@@ -1,6 +1,9 @@
 package com.pokemon.api.service;
 
+import com.pokemon.api.model.PokedexPokemon;
 import com.pokemon.api.service.output.UserPokedexOutput;
+
+import java.util.List;
 
 public interface PokedexService {
 
@@ -13,5 +16,7 @@ public interface PokedexService {
     void capture(Long userId, Short pokemonId);
 
     void seePokemon(Long userId, short pokemonId);
+
+    List<PokedexPokemon> getFavorites(Long userId);
 
 }

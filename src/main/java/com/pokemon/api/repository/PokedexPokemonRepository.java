@@ -9,8 +9,10 @@ public interface PokedexPokemonRepository extends JpaRepository<PokedexPokemon, 
 
     List<PokedexPokemon> findByPokedexId(Long pokedexId);
 
-    Short countByPokedexId(Long pokedexId);
+    Short countByPokedexIdAndFavoriteTrue(Long pokedexId);
 
     PokedexPokemon findByPokedexIdAndPokemonPokemonId(Long pokedexId, Short pokemonId);
+
+    List<PokedexPokemon> findByPokedexIdAndFavoriteTrue(Long pokedexId);
 
 }

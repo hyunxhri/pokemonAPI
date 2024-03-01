@@ -1,8 +1,8 @@
 package com.pokemon.api.service.impl;
 
 import com.pokemon.api.exception.MaxPokemonFavoriteException;
+import com.pokemon.api.exception.PokemonAlreadyCapturedException;
 import com.pokemon.api.exception.PokemonNotCapturedException;
-import com.pokemon.api.exception.PokemonNotFoundException;
 import com.pokemon.api.model.Pokedex;
 import com.pokemon.api.model.PokedexPokemon;
 import com.pokemon.api.repository.PokedexPokemonRepository;
@@ -39,7 +39,7 @@ public class PokedexServiceImpl implements PokedexService {
 
         Pokedex pokedex = pokedexRepository.findByUserId(userId);
 
-        Short favorites = pokedexPokemonRepository.countByPokedexId(pokedex.getId());
+        Short favorites = pokedexPokemonRepository.countByPokedexIdAndFavoriteTrue(pokedex.getId());
 
         if (MAX_FAVORITES.equals(favorites)) {
             throw new MaxPokemonFavoriteException("Max pokemons favorite");
@@ -75,15 +75,12 @@ public class PokedexServiceImpl implements PokedexService {
 
         Pokedex pokedex = pokedexRepository.findByUserId(userId);
 
-        if(pokedex.getPokedexPokemon().stream()
-                .anyMatch(p -> p.getPokemon().getPokemonId().equals(pokemonId)
-                        && (p.getCaptured())
+        PokedexPokemon pokemon = pokedex.getPokedexPokemon().stream()
+                .filter(p -> p.getPokemon().getPokemonId().equals(pokemonId))
+                .filter(p -> !p.getCaptured())
+                .findFirst()
+                .orElseThrow(() -> new PokemonAlreadyCapturedException("Pokemon with id " + pokemonId + " is already captured"));
 
-                )){
-            throw new RuntimeException();
-        }
-
-        PokedexPokemon pokemon = new PokedexPokemon();
         pokemon.setPokemon(pokemonSpecieRepository.getReferenceById(pokemonId));
         pokemon.setCaptured(true);
         pokemon.setSeen(true);
@@ -110,6 +107,12 @@ public class PokedexServiceImpl implements PokedexService {
         pokemon.setSeen(true);
 
         pokedexPokemonRepository.save(pokemon);
+    }
+
+    @Override
+    public List<PokedexPokemon> getFavorites(Long userId) {
+        Pokedex pokedex = pokedexRepository.findByUserId(userId);
+        return pokedexPokemonRepository.findByPokedexIdAndFavoriteTrue(pokedex.getId());
     }
 
     private UserPokedexOutput toUserPokemonOutput(Pokedex pokedex, List<PokedexPokemon> pokedexPokemons) {

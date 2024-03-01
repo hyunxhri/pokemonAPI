@@ -3,12 +3,15 @@ package com.pokemon.api.controller;
 import com.pokemon.api.dto.PokedexPokemonDTO;
 import com.pokemon.api.dto.UpdatePokemonDTO;
 import com.pokemon.api.dto.UserPokedexDTO;
+import com.pokemon.api.model.PokedexPokemon;
 import com.pokemon.api.service.PokedexService;
 import com.pokemon.api.service.TokenExtractor;
 import com.pokemon.api.service.output.PokedexPokemonOutput;
 import com.pokemon.api.service.output.UserPokedexOutput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/pokedex")
@@ -22,6 +25,12 @@ public class PokedexController {
     @GetMapping
     public UserPokedexDTO getPokedex(@RequestHeader(name = "Authorization") String token) {
         return toDto(pokedexService.getPokedex(tokenExtractor.getUser(token)));
+    }
+
+    @GetMapping("/favorites")
+    public List<PokedexPokemonDTO> getFavorites(@RequestHeader(name = "Authorization") String token) {
+        return pokedexService.getFavorites(tokenExtractor.getUser(token)).stream()
+                .map(this::toPokemonPokedexDto).toList();
     }
 
     @PutMapping("/pokemons/{pokemonId}")
@@ -68,6 +77,16 @@ public class PokedexController {
         dto.setSeen(output.getSeen());
         dto.setCaptured(output.getCaptured());
         dto.setFavorite(output.getFavorite());
+
+        return dto;
+    }
+
+    private PokedexPokemonDTO toPokemonPokedexDto(PokedexPokemon pkpokemon) {
+        PokedexPokemonDTO dto = new PokedexPokemonDTO();
+        dto.setPokemonId(pkpokemon.getPokemon().getPokemonId());
+        dto.setSeen(pkpokemon.getSeen());
+        dto.setCaptured(pkpokemon.getCaptured());
+        dto.setFavorite(pkpokemon.getFavorite());
 
         return dto;
     }
